@@ -5,8 +5,9 @@ import java.awt.event.KeyEvent;
 
 public class Painting extends JPanel implements KeyListener{
 
-    Map m = new Map(21);
-    Player p = new Player(1, 1);
+    Game game = new Game();
+    Map m = game.getMap();
+    Player p = game.getPlayer();
 
     public Painting(Frame f){
         addKeyListener(this);

@@ -5,21 +5,24 @@ import java.awt.event.KeyListener;
 public class Player {
    private int x;
    private int y;
+   private Map m;
 
-   public Player(int x, int y) {
+
+   public Player(int x, int y, Map m) {
       this.x = x;
       this.y = y;
+      this.m = m;
    }
 
    public void movement(KeyEvent e) {
     int key = e.getKeyCode();
-    if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+    if ((key == KeyEvent.VK_UP || key == KeyEvent.VK_W) && !m.getCell(x, y-1).isWall()) {
          --this.y;
-      } else if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+      } else if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S && !m.getCell(x, y+1).isWall()) {
          ++this.y;
-      } else if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
+      } else if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A && !m.getCell(x-1, y).isWall()) {
          --this.x;
-      } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
+      } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D && !m.getCell(x+1, y).isWall()) {
          ++this.x;
       }
 

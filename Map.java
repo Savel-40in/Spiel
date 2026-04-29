@@ -21,6 +21,10 @@ public class Map {
 		}
 		cellRouting(1, 1);
 	}
+
+	public Cell getCell(int x, int y) {
+		return map[x][y];
+	}
 	
 //	private void cellRouting(int i, int j) {
 //		map[i][j].setWall(false);
