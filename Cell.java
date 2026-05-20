@@ -4,11 +4,12 @@ public class Cell {
 	private int x;
 	private int y;
 	private boolean isWall;
-	private boolean endRoad;
+	private int neighborCount;
+	private boolean isVisited;
 	
 	public Cell(int x,  int y){
 		isWall = true;
-		endRoad = false;
+		neighborCount = 2;
 		this.x = x;
 		this.y = y;
 	}
@@ -16,9 +17,11 @@ public class Cell {
 	public void drawCell(Graphics g) {
 		if (isWall) {
 			g.setColor(Color.BLACK);
-		}else if (endRoad){
+		}else if (neighborCount < 2){
 			g.setColor(Color.RED);
-		}else{
+		}else if (neighborCount > 2){
+			g.setColor(Color.BLUE);
+		}else {
 			g.setColor(Color.DARK_GRAY);
 		}
     	g.fillRect(x*30, y*30, 30, 30);
@@ -51,13 +54,21 @@ public class Cell {
 	public void setWall(boolean isWall) {
 		this.isWall = isWall;
 	}
-
-	public boolean endRoad() {
-		return endRoad;
+	
+	public int getNeighborCount() {
+		return neighborCount;
 	}
 
-	public void setRoad(boolean endRoad) {
-		this.endRoad = endRoad;
+	public void setNeighborCount(int neighborCount) {
+		this.neighborCount = neighborCount;
+	}
+
+	public boolean isVisited() {
+		return isVisited;
+	}
+
+	public void setVisited(boolean isVisited) {
+		this.isVisited = isVisited;
 	}
 
 }

@@ -59,16 +59,15 @@ public class Map {
 	        }
 	    }
 
-		if (endRoad(i, j)){
-			map[i][j].setRoad(true);
-		}
+		map[i][j].setNeighborCount(NeighborCount(i, j));
+		
 	}
 
 	private boolean inMatrix(int x, int  y){
 		return x >= 0 && x < size && y >= 0 && y < size;
 	}
 
-	private boolean endRoad(int i, int  j){
+	private int NeighborCount(int i, int  j){
 		List<int[]> neighbor = neighboringCellSearch(i, j, 1);
 
 		int count = 0;
@@ -79,11 +78,8 @@ public class Map {
 	        }
 	    }
 
-		if (count >= 2){
-			return false;
-		} else {
-		return true;
-		}
+		return count;
+		
 	}
 
 	private List<int[]> neighboringCellSearch(int i, int j,  int  step){

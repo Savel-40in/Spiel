@@ -6,8 +6,6 @@ import java.awt.event.KeyEvent;
 public class Painting extends JPanel implements KeyListener{
 
     Game game = new Game();
-    Map m = game.getMap();
-    Player p = game.getPlayer();
 
     public Painting(Frame f){
         addKeyListener(this);
@@ -17,13 +15,12 @@ public class Painting extends JPanel implements KeyListener{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        m.drawMap(g);
-        p.drawPlayer(g);
+        game.draw(g);
     }
 
     public void keyPressed(KeyEvent e) {
-        p.movement(e);
-        // p.printInfo();
+        game.input(e);
+        
         repaint();
     }
 
