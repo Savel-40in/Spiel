@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
@@ -7,8 +6,9 @@ public class Game {
     private Player p;
     
     public Game() {
-        m = new Map(25);
+        m = new Map();
         p = new Player(1, 1);
+        
     }
     
     public void draw(Graphics g) {
@@ -29,8 +29,12 @@ public class Game {
         	 movePlayer(p.x()+1, p.y());
         }
     	
-    	if (p.x() == 3 && p.y() == 3) {
+    	if (key == KeyEvent.VK_R) {
     		newMap();
+    	}
+
+    	if (key == KeyEvent.VK_ESCAPE) {
+    		System.exit(0);
     	}
     	
     }
@@ -42,7 +46,7 @@ public class Game {
     }
     
     public void newMap() {
-    	m = new Map(25);
+    	m = new Map();
     }
 
     public Map getMap() {
