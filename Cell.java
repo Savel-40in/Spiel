@@ -6,10 +6,12 @@ public class Cell {
 	private boolean isWall;
 	private int neighborCount;
 	private boolean isVisited;
+	private Event event;
 	
 	public Cell(int x,  int y){
 		isWall = true;
 		neighborCount = 2;
+		event = new Event();
 		this.x = x;
 		this.y = y;
 	}
@@ -71,4 +73,12 @@ public class Cell {
 		this.isVisited = isVisited;
 	}
 
+	public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+	
 }

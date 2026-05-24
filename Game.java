@@ -29,9 +29,14 @@ public class Game {
         	 movePlayer(p.x()+1, p.y());
         }
     	
-    	if (p.x() == 3 && p.y() == 3) {
+    	if (key == KeyEvent.VK_R) {
     		newMap();
     	}
+
+        if (key == KeyEvent.VK_E) {
+            Cell currentCell = m.getCell(p.x(), p.y());
+            currentCell.getEvent().trigger().accept(this);
+        }
     	
     }
     	
