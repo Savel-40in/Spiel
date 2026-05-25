@@ -4,16 +4,20 @@ import java.awt.event.KeyEvent;
 public class Game {
     private Map m;
     private Player p;
+    private FoW f;
     
     public Game() {
         m = new Map();
+        f = new FoW();
         p = new Player(1, 1);
         m.getCell(3, 3).setEvent(new PortalEvent());
+        updateFoW();
     }
     
     public void draw(Graphics g) {
 		m.drawMap(g);
     	p.drawPlayer(g);
+		f.drawFogOfWar(g);
 	} 
     
     public void input (KeyEvent e) {
@@ -42,6 +46,8 @@ public class Game {
     	if (key == KeyEvent.VK_ESCAPE) {
     		System.exit(0);
     	}
+
+        updateFoW();
     	
     }
     	
@@ -53,13 +59,33 @@ public class Game {
     
     public void newMap() {
     	m = new Map();
+    	f = new FoW();
     }
 
+    private void updateFoW() {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int checkX = p.x() + i;
+                int checkY = p.y() + j;
+                f.reveal(checkX, checkY);
+            }
+        }
+    }
+
+    // GETTERS + SETTERS
     public Map getMap() {
         return m;
     }
 
-    public Player getPlayer() {
-        return p;
+    public FoW getFoW() {
+        return f;
+    }
+
+    public void setMap(Map m) {
+        this.m = m;
+    }
+
+    public void setFoW(FoW f) {
+        this.f = f;
     }
 }
