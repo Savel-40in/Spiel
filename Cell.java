@@ -11,7 +11,7 @@ public class Cell {
 	public Cell(int x,  int y){
 		isWall = true;
 		neighborCount = 2;
-		event = new Event();
+		event = new NoEvent();
 		this.x = x;
 		this.y = y;
 	}
@@ -27,6 +27,7 @@ public class Cell {
 			g.setColor(Color.DARK_GRAY);
 		}
     	g.fillRect(x*30, y*30, 30, 30);
+		event.draw(g, x, y);
 	}
 
 

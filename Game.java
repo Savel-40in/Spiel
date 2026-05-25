@@ -9,6 +9,7 @@ public class Game {
     public Game() {
         m = new Map(25);
         p = new Player(1, 1);
+        m.getCell(3, 3).setEvent(new PortalEvent());
     }
     
     public void draw(Graphics g) {
@@ -34,8 +35,9 @@ public class Game {
     	}
 
         if (key == KeyEvent.VK_E) {
-            Cell currentCell = m.getCell(p.x(), p.y());
+            Cell currentCell = m.getCell(p.x(), p.y()); 
             currentCell.getEvent().trigger().accept(this);
+            currentCell.setEvent(new NoEvent()); // Remove the event after triggering it
         }
     	
     }
