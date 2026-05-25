@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
@@ -7,7 +6,7 @@ public class Game {
     private Player p;
     
     public Game() {
-        m = new Map(25);
+        m = new Map();
         p = new Player(1, 1);
         m.getCell(3, 3).setEvent(new PortalEvent());
     }
@@ -39,6 +38,10 @@ public class Game {
             currentCell.getEvent().trigger().accept(this);
             currentCell.setEvent(new NoEvent()); // Remove the event after triggering it
         }
+
+    	if (key == KeyEvent.VK_ESCAPE) {
+    		System.exit(0);
+    	}
     	
     }
     	
@@ -49,7 +52,7 @@ public class Game {
     }
     
     public void newMap() {
-    	m = new Map(25);
+    	m = new Map();
     }
 
     public Map getMap() {

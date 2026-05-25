@@ -7,6 +7,8 @@ public class Cell {
 	private int neighborCount;
 	private boolean isVisited;
 	private Event event;
+	private boolean isRoom;
+	private int size = GameConstants.CELL_SIZE;
 	
 	public Cell(int x,  int y){
 		isWall = true;
@@ -14,11 +16,15 @@ public class Cell {
 		event = new NoEvent();
 		this.x = x;
 		this.y = y;
+		isVisited = false;
+		isRoom = false;
 	}
 	
 	public void drawCell(Graphics g) {
 		if (isWall) {
 			g.setColor(Color.BLACK);
+		}else if (isRoom) {
+			g.setColor(Color.GRAY);
 		}else if (neighborCount < 2){
 			g.setColor(Color.RED);
 		}else if (neighborCount > 2){
@@ -26,7 +32,8 @@ public class Cell {
 		}else {
 			g.setColor(Color.DARK_GRAY);
 		}
-    	g.fillRect(x*30, y*30, 30, 30);
+		
+		g.fillRect(x*size, y*size, size, size);
 		event.draw(g, x, y);
 	}
 
@@ -82,4 +89,12 @@ public class Cell {
 		this.event = event;
 	}
 	
+	public boolean isRoom() {
+		return isRoom;
+	}
+
+	public void setRoom(boolean isRoom) {
+		this.isRoom = isRoom;
+	}
 }
+
