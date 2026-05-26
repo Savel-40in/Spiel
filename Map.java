@@ -4,14 +4,15 @@ import java.util.List;
 
 public class Map {
 	
-	private int size;
+	private int MAP_SIZE = GameConstants.MAP_SIZE;;
+	private int ROOM_SIZE = GameConstants.MAX_ROOM_SIZE - GameConstants.MIN_ROOM_SIZE;
+	
 	private Cell[][] map;
 	
 	private Random random = new Random();
 	
 	public Map () {
-		this.size = GameConstants.MAP_SIZE;
-		map = new Cell[size][size];
+		map = new Cell[MAP_SIZE][MAP_SIZE];
 		generateMap();
 	}
 
@@ -20,8 +21,8 @@ public class Map {
 	}
 	
 	public void drawMap(Graphics g) {
-		for(int i = 0;  i < size; i++) {
-			for(int j = 0;  j < size; j++) {
+		for(int i = 0;  i < MAP_SIZE; i++) {
+			for(int j = 0;  j < MAP_SIZE; j++) {
 				map[i][j].drawCell(g);
 			}
 		}
@@ -30,10 +31,14 @@ public class Map {
 	private void generateMap() {
 		initializeMap();
 
-		generateMazeDFS(random.nextInt(size / 2) * 2 + 1, random.nextInt(size / 2) * 2 + 1); // Start at a random odd cell
+		
+
+		generateMazeDFS(random.nextInt(MAP_SIZE / 2) * 2 + 1, random.nextInt(MAP_SIZE / 2) * 2 + 1); // Start at a random odd cell
+		
 		generateRooms();
-		for (int i = 1; i < size; i++) {
-		    for (int j = 1; j < size; j++) {
+
+		for (int i = 1; i < MAP_SIZE; i++) {
+		    for (int j = 1; j < MAP_SIZE; j++) {
 				carveRoomAt(i, j);
 				map[i][j].setNeighborCount(countOpenNeighbors(i, j));
 		    }
@@ -42,9 +47,9 @@ public class Map {
 
 	private void generateRooms() {
 		for (int n = 0; n < GameConstants.ROOM_COUNT; n++) {
-			int roomSize = random.nextInt(GameConstants.MAX_ROOM_SIZE - GameConstants.MIN_ROOM_SIZE + 1) + GameConstants.MIN_ROOM_SIZE;
-			int x = random.nextInt(size - roomSize - 1) + 1;
-			int y = random.nextInt(size - roomSize - 1) + 1;
+			int roomSize = random.nextInt(ROOM_SIZE / 2) * 2 + GameConstants.MIN_ROOM_SIZE;
+			int x = random.nextInt(MAP_SIZE - roomSize - 1) / 2 * 2 + 1;
+			int y = random.nextInt(MAP_SIZE - roomSize - 1) / 2 * 2 + 1;
 
 			for (int i = x; i < x + roomSize; i++) {
 				for (int j = y; j < y + roomSize; j++) {
@@ -71,8 +76,8 @@ public class Map {
 	}
 
 	private void initializeMap() {
-		for (int i = 0; i < size; i++) {
-		    for (int j = 0; j < size; j++) {
+		for (int i = 0; i < MAP_SIZE; i++) {
+		    for (int j = 0; j < MAP_SIZE; j++) {
 		        map[i][j] = new Cell(i, j); 
 		    }
 		}
@@ -96,7 +101,7 @@ public class Map {
 	}
 
 	private boolean isInsideBounds(int x, int  y){
-		return x >= 0 && x < size && y >= 0 && y < size;
+		return x >= 0 && x < MAP_SIZE && y >= 0 && y < MAP_SIZE;
 	}
 
 	private int countOpenNeighbors(int i, int  j){
@@ -138,11 +143,11 @@ public class Map {
 	
 //	GETTER + SETTER
 	public int getSize() {
-		return size;
+		return MAP_SIZE;
 	}
 
 	public void setSize(int size) {
-		this.size = size;
+		this.MAP_SIZE = size;
 	}
 
 	public Cell[][] getMap() {
