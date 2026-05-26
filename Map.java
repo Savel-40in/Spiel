@@ -31,12 +31,27 @@ public class Map {
 		initializeMap();
 
 		generateMazeDFS(random.nextInt(size / 2) * 2 + 1, random.nextInt(size / 2) * 2 + 1); // Start at a random odd cell
-
+		generateRooms();
 		for (int i = 1; i < size; i++) {
 		    for (int j = 1; j < size; j++) {
 				carveRoomAt(i, j);
 				map[i][j].setNeighborCount(countOpenNeighbors(i, j));
 		    }
+		}
+	}
+
+	private void generateRooms() {
+		for (int n = 0; n < GameConstants.ROOM_COUNT; n++) {
+			int roomSize = random.nextInt(GameConstants.MAX_ROOM_SIZE - GameConstants.MIN_ROOM_SIZE + 1) + GameConstants.MIN_ROOM_SIZE;
+			int x = random.nextInt(size - roomSize - 1) + 1;
+			int y = random.nextInt(size - roomSize - 1) + 1;
+
+			for (int i = x; i < x + roomSize; i++) {
+				for (int j = y; j < y + roomSize; j++) {
+					map[i][j].setWall(false);
+					map[i][j].setRoom(true);
+				}
+			}
 		}
 	}
 
