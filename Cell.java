@@ -5,7 +5,6 @@ public class Cell {
 	private int y;
 	private boolean isWall;
 	private int neighborCount;
-	private boolean isVisited;
 	private Event event;
 	private boolean isRoom;
 	private int size = GameConstants.CELL_SIZE;
@@ -16,7 +15,6 @@ public class Cell {
 		event = new NoEvent();
 		this.x = x;
 		this.y = y;
-		isVisited = false;
 		isRoom = false;
 	}
 	
@@ -71,14 +69,6 @@ public class Cell {
 
 	public void setNeighborCount(int neighborCount) {
 		this.neighborCount = neighborCount;
-	}
-
-	public boolean isVisited() {
-		return isVisited;
-	}
-
-	public void setVisited(boolean isVisited) {
-		this.isVisited = isVisited;
 	}
 
 	public Event getEvent() {
