@@ -10,6 +10,7 @@ public class Game {
     private StarBar s;
     private List<Animatable> animatables = new ArrayList<>();
     private boolean isAnimating = false;
+    private FoW f;
 
     private Random random = new Random();
     
@@ -20,14 +21,17 @@ public class Game {
 
     public void newGame() {
         m = new Map();
+        f = new FoW();
         s = new StarBar();
         generateEvents();
+        updateFoW();
     }
     
     public void draw(Graphics g) {
 		m.drawMap(g);
 		s.drawStars(g);
     	p.drawPlayer(g);
+		f.drawFogOfWar(g);
 	} 
     
     public void input (KeyEvent e) {
@@ -56,6 +60,8 @@ public class Game {
     	if (key == KeyEvent.VK_ESCAPE) {
     		System.exit(0);
     	}
+
+        updateFoW();
     	
     }
 
@@ -96,14 +102,33 @@ public class Game {
         
         m.getEnds().get(random.nextInt(m.getEnds().size())).setEvent(new PortalEvent());
     }
-    
-    
+
+    private void updateFoW() {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int checkX = p.x() + i;
+                int checkY = p.y() + j;
+                f.reveal(checkX, checkY);
+            }
+        }
+    }
+
+    // GETTERS + SETTERS
+
     public Map getMap() {
         return m;
     }
 
-    public Player getPlayer() {
-        return p;
+    public FoW getFoW() {
+        return f;
+    }
+
+    public void setMap(Map m) {
+        this.m = m;
+    }
+
+    public void setFoW(FoW f) {
+        this.f = f;
     }
     
     public StarBar getStarBar() {
@@ -120,5 +145,9 @@ public class Game {
 
     public void setAnimating(boolean isAnimating) {
         this.isAnimating = isAnimating;
+    }
+
+    public Player getPlayer() {
+        return p;
     }
 }
