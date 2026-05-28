@@ -2,6 +2,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Game {
     private Map m;
@@ -9,16 +10,18 @@ public class Game {
     private StarBar s;
     private List<Animatable> animatables = new ArrayList<>();
     private boolean isAnimating = false;
+
+    private Random random = new Random();
     
     public Game() {
-        m = new Map();
         p = new Player(1, 1);
-        s = new StarBar();
-        m.getCell(3, 3).setEvent(new PortalEvent());
-        m.getCell(5, 5).setEvent(new ChestEvent());
-        m.getCell(3, 5).setEvent(new ChestEvent());
-        m.getCell(23, 23).setEvent(new ChestEvent());
+        newGame();
+    }
 
+    public void newGame() {
+        m = new Map();
+        s = new StarBar();
+        generateEvents();
     }
     
     public void draw(Graphics g) {
@@ -41,7 +44,7 @@ public class Game {
         }
     	
     	if (key == KeyEvent.VK_R) {
-    		newMap();
+    		newGame();
     	}
 
         if (key == KeyEvent.VK_E) {
@@ -77,12 +80,24 @@ public class Game {
     		p.move(newX, newY);
     	}
     }
-    
-    public void newMap() {
-    	m = new Map();
-        s = new StarBar();
-    }
 
+    private void generateEvents() {
+        for (int i = 0; i < 3; i++) {
+            int index = random.nextInt(m.getRooms().size());
+            m.getRooms().get(index).setEvent(new ChestEvent());
+            m.getRooms().remove(index); // Remove the room from the list to avoid placing multiple events in the same room
+        }
+
+        // for (Cell end : m.getEnds()) {
+        //     if (Math.random() < 0.3) {
+        //         end.setEvent(new ChestEvent());
+        //     }
+        // }
+        
+        m.getEnds().get(random.nextInt(m.getEnds().size())).setEvent(new PortalEvent());
+    }
+    
+    
     public Map getMap() {
         return m;
     }

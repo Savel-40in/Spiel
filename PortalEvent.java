@@ -10,7 +10,7 @@ public class PortalEvent extends Event {
     @Override
     public Consumer<Game> trigger() {
         return (game) -> {
-            game.newMap();
+            game.newGame();
         };
     }
     

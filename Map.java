@@ -8,6 +8,9 @@ public class Map {
 	private int ROOM_SIZE = GameConstants.MAX_ROOM_SIZE - GameConstants.MIN_ROOM_SIZE;
 	
 	private Cell[][] map;
+
+	private List<Cell> rooms = new ArrayList<>();
+	private List<Cell> ends = new ArrayList<>();
 	
 	private Random random = new Random();
 	
@@ -41,6 +44,9 @@ public class Map {
 		    for (int j = 1; j < MAP_SIZE; j++) {
 				carveRoomAt(i, j);
 				map[i][j].setNeighborCount(countOpenNeighbors(i, j));
+				if (!map[i][j].isWall() && countOpenNeighbors(i, j) == 1) {
+					ends.add(map[i][j]);
+				}
 		    }
 		}
 	}
@@ -57,6 +63,8 @@ public class Map {
 					map[i][j].setRoom(true);
 				}
 			}
+
+			rooms.add(map[x + roomSize / 2][y + roomSize / 2]);
 		}
 	}
 
@@ -156,6 +164,14 @@ public class Map {
 
 	public void setMap(Cell[][] map) {
 		this.map = map;
+	}
+
+	public List<Cell> getRooms() {
+		return rooms;
+	}
+
+	public List<Cell> getEnds() {
+		return ends;
 	}
 
 }
