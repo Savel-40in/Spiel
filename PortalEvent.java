@@ -3,8 +3,9 @@ import java.awt.*;
 
 public class PortalEvent extends Event {
     public PortalEvent() {
-        this.color = Color.MAGENTA; // Set the color for the portal event
+        this.color = Color.CYAN; // Set the color for the portal event
     }
+
 
     @Override
     public Consumer<Game> trigger() {

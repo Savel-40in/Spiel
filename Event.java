@@ -9,6 +9,6 @@ public abstract class Event {
 
     public final void draw(Graphics g, int x, int y) {
         g.setColor(color);
-        g.fillRect(x*30, y*30, 30, 30);
+        g.fillRect(x*GameConstants.CELL_SIZE, y*GameConstants.CELL_SIZE, GameConstants.CELL_SIZE, GameConstants.CELL_SIZE);
     }
 }

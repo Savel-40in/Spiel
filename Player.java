@@ -17,7 +17,7 @@ public class Player {
 
    public void drawPlayer(Graphics g) {
 		g.setColor(Color.GREEN);
-    	g.fillRect(x*GameConstants.CELL_SIZE, y*GameConstants.CELL_SIZE, GameConstants.CELL_SIZE, GameConstants.CELL_SIZE);
+    	g.fillOval(x*GameConstants.CELL_SIZE, y*GameConstants.CELL_SIZE, GameConstants.CELL_SIZE, GameConstants.CELL_SIZE);
 	}
    
    public int x() {

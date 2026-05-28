@@ -4,15 +4,25 @@ import java.awt.event.KeyEvent;
 public class Game {
     private Map m;
     private Player p;
+    private StarBar s;
+    private Animatable[] a;
+    private boolean isAnimating = false;
     
     public Game() {
         m = new Map();
         p = new Player(1, 1);
+        s = new StarBar();
+        a = new Animatable[1];
         m.getCell(3, 3).setEvent(new PortalEvent());
+        m.getCell(5, 5).setEvent(new ChestEvent());
+        m.getCell(3, 5).setEvent(new ChestEvent());
+        m.getCell(5, 3).setEvent(new ChestEvent());
+
     }
     
     public void draw(Graphics g) {
 		m.drawMap(g);
+		s.drawStars(g);
     	p.drawPlayer(g);
 	} 
     
@@ -44,6 +54,11 @@ public class Game {
     	}
     	
     }
+
+    public void update() {
+        a[0].update();
+        isAnimating = a[0].isAnimating();
+    }
     	
     private void movePlayer(int newX, int newY) {
     	if (!m.getCell(newX, newY).isWall()) {
@@ -53,6 +68,7 @@ public class Game {
     
     public void newMap() {
     	m = new Map();
+        s = new StarBar();
     }
 
     public Map getMap() {
@@ -61,5 +77,21 @@ public class Game {
 
     public Player getPlayer() {
         return p;
+    }
+    
+    public StarBar getStarBar() {
+        return s;
+    }
+
+    public Animatable[] getAnimatables() {
+        return a;
+    }
+
+    public boolean isAnimating() {
+        return isAnimating;
+    }
+
+    public void setAnimating(boolean isAnimating) {
+        this.isAnimating = isAnimating;
     }
 }
