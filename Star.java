@@ -1,36 +1,36 @@
 import java.awt.*;
 
 public class Star implements Animatable{
-    private int cx;
-    private int cy;
+    private int startX;
+    private int startY;
     private double angle = 0;
     private int size  = 20;
     private Color color = Color.YELLOW;
     private static int count = -1;
     // for animation
-    private int stepx;
-    private int stepy;
+    private int x;
+    private int y;
+    private double progress = 0;
+    private final int finalX;
+    private final int finalY;
     private double stepa = Math.PI / 60; // Rotate 3 degrees per frame
     private boolean isAnimating = true;
 
     
-    public Star(int cx, int cy) {
-        this.cx = cx;
-        this.cy = cy;
+    public Star(int x, int y) {
+        this.startX = x;
+        this.startY = y;
         count = (count + 1) % 3; // Increment count and wrap around after 3
-        stepx = ((800 + size * count * 2) - this.cx) / 120;
-        stepy = ((50 - 10 * (count % 2))- this.cy) / 120;
+        finalX = (800 + size * count * 2);
+        finalY = (50 - 10 * (count % 2));
     }
 
     public void update() {
-        cx += stepx;
-        cy += stepy;
+        x = (int)(startX + (finalX - startX) * progress);
+        y = (int)(startY + (finalY - startY) * progress);
+        progress += 0.02; // Adjust the speed of animation
         angle += stepa;
-        isAnimating = (cx < (800 + size * count * 2));
-        if (!isAnimating) { 
-            setX();
-            setY();
-        }
+        isAnimating = (x < finalX);
     }
 
     public boolean isAnimating() {
@@ -40,42 +40,34 @@ public class Star implements Animatable{
 
     public void drawStar(Graphics g) {
 
-        int[] x = {
-            cx,
-            cx + size / 4,
-            cx + size,
-            cx + size / 2,
-            cx + (3 * size) / 4,
-            cx,
-            cx - (3 * size) / 4,
-            cx - size / 2,
-            cx - size,
-            cx - size / 4
+        int[] X = {
+            x,
+            x + size / 4,
+            x + size,
+            x + size / 2,
+            x + (3 * size) / 4,
+            x,
+            x - (3 * size) / 4,
+            x - size / 2,
+            x - size,
+            x - size / 4
         };
 
-        int[] y = {
-            cy - size,
-            cy - size / 4,
-            cy - size / 4,
-            cy + size / 4,
-            cy + size,
-            cy + size / 2,
-            cy + size,
-            cy + size / 4,
-            cy - size / 4,
-            cy - size / 4
+        int[] Y = {
+            y - size,
+            y - size / 4,
+            y - size / 4,
+            y + size / 4,
+            y + size,
+            y + size / 2,
+            y + size,
+            y + size / 4,
+            y - size / 4,
+            y - size / 4
         };
         
         g.setColor(color);
-        g.fillPolygon(x, y, 10);
-    }
-
-    public void setX() {
-        this.cx = (800 + size * count * 2);
-    }
-
-    public void setY() {
-        this.cy = (50 - 10 * (count % 2));
+        g.fillPolygon(X, Y, 10);
     }
 
 }

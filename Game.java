@@ -1,22 +1,23 @@
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
     private Map m;
     private Player p;
     private StarBar s;
-    private Animatable[] a;
+    private List<Animatable> animatables = new ArrayList<>();
     private boolean isAnimating = false;
     
     public Game() {
         m = new Map();
         p = new Player(1, 1);
         s = new StarBar();
-        a = new Animatable[1];
         m.getCell(3, 3).setEvent(new PortalEvent());
         m.getCell(5, 5).setEvent(new ChestEvent());
         m.getCell(3, 5).setEvent(new ChestEvent());
-        m.getCell(5, 3).setEvent(new ChestEvent());
+        m.getCell(23, 23).setEvent(new ChestEvent());
 
     }
     
@@ -56,8 +57,19 @@ public class Game {
     }
 
     public void update() {
-        a[0].update();
-        isAnimating = a[0].isAnimating();
+        isAnimating = false;
+        for (int i = animatables.size() - 1; i >= 0; i--) {
+
+        Animatable a = animatables.get(i);
+
+        a.update();
+
+        if (a.isAnimating()) {
+            isAnimating = true;
+        } else {
+            animatables.remove(i);
+        }
+    }
     }
     	
     private void movePlayer(int newX, int newY) {
@@ -83,8 +95,8 @@ public class Game {
         return s;
     }
 
-    public Animatable[] getAnimatables() {
-        return a;
+    public List<Animatable> getAnimatables() {
+        return animatables;
     }
 
     public boolean isAnimating() {

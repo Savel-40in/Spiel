@@ -10,7 +10,7 @@ public class ChestEvent extends Event {
     public Consumer<Game> trigger() {
         return (game) -> {
             game.getStarBar().addStar(new Star(game.getPlayer().x() * GameConstants.CELL_SIZE, game.getPlayer().y() * GameConstants.CELL_SIZE));
-            game.getAnimatables()[0] = game.getStarBar().getStar();
+            game.getAnimatables().add(game.getStarBar().getStar()); // Add the star to the list of animatables for the game.getStarBar().getStar();
             game.setAnimating(true);
         };
     }
