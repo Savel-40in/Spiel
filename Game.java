@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Game {
+public class Game implements Screen{
     private Map m;
     private Player p;
     private StarBar s;
@@ -29,9 +29,9 @@ public class Game {
     
     public void draw(Graphics g) {
 		m.drawMap(g);
-		s.drawStars(g);
     	p.drawPlayer(g);
-		f.drawFogOfWar(g);
+//		f.drawFogOfWar(g);
+		s.drawStars(g);
 	} 
     
     public void input (KeyEvent e) {
@@ -58,7 +58,7 @@ public class Game {
         }
 
     	if (key == KeyEvent.VK_ESCAPE) {
-    		System.exit(0);
+    		ScreenManager.popScreen();
     	}
 
         updateFoW();
