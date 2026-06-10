@@ -1,0 +1,34 @@
+public class Gegner
+private int x;
+private int y;
+private double attackDmg;
+public Gegner(int x;int y;double attackDmg){
+    this.x = x;
+    this.y = y;
+    this.attackDmg = attackDmg;
+}
+public void setX(int x){
+    this.x = x;
+}
+public int getX (){
+return x;
+}
+public void setY(int y){
+    this.y = y;
+}
+public int getY (){
+return y;
+}
+public void setAttackDmg(double attackDmg){
+    this.attackDmg = attackDmg;
+}
+public int getAttackDmg (){
+return attackDmg;
+}
+
+
+
+public void drawGegner(Graphics g) {
+		g.setColor(Color.GREEN);
+    	g.fillOval(x*GameConstants.CELL_SIZE, y*GameConstants.CELL_SIZE, GameConstants.CELL_SIZE, GameConstants.CELL_SIZE);
+	}

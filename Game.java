@@ -16,6 +16,7 @@ public class Game {
     
     public Game() {
         p = new Player(1, 1);
+        gegner = new Gegner(3,3,1)
         newGame();
     }
 
@@ -31,6 +32,7 @@ public class Game {
 		m.drawMap(g);
 		s.drawStars(g);
     	p.drawPlayer(g);
+        gegner.draw(g);
 		f.drawFogOfWar(g);
 	} 
     
@@ -60,6 +62,9 @@ public class Game {
     	if (key == KeyEvent.VK_ESCAPE) {
     		System.exit(0);
     	}
+        if(key == KeyEvent.Vk_K){
+
+        }
 
         updateFoW();
     	
