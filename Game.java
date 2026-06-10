@@ -1,5 +1,6 @@
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,9 +30,9 @@ public class Game {
     
     public void draw(Graphics g) {
 		m.drawMap(g);
-		s.drawStars(g);
+        f.drawFogOfWar(g);
     	p.drawPlayer(g);
-		f.drawFogOfWar(g);
+		s.drawStars(g);
 	} 
     
     public void input (KeyEvent e) {
@@ -51,7 +52,7 @@ public class Game {
     		newGame();
     	}
 
-        if (key == KeyEvent.VK_E) {
+        if (key == KeyEvent.VK_E || key == KeyEvent.VK_F) {
             Cell currentCell = m.getCell(p.x(), p.y()); 
             currentCell.getEvent().trigger().accept(this);
             currentCell.setEvent(new NoEvent()); // Remove the event after triggering it
@@ -63,6 +64,10 @@ public class Game {
 
         updateFoW();
     	
+    }
+
+    public void input (MouseEvent e) {
+        // Handle mouse input if needed
     }
 
     public void update() {

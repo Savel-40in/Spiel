@@ -3,14 +3,17 @@ import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 
-public class Painting extends JPanel implements KeyListener{
+public class Painting extends JPanel implements KeyListener, MouseListener {
 
     Game game = new Game();
     Timer timer;
 
     public Painting(Frame f){
         addKeyListener(this);
+        addMouseListener(this);
         setFocusable(true);
         timer = new Timer(16, e -> {
             game.update();
@@ -43,6 +46,28 @@ public class Painting extends JPanel implements KeyListener{
     }
 
     public void keyTyped(KeyEvent e) {
+    }
+
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+        game.input(e);
+
+        if (game.isAnimating()) {
+            timer.start();
+        }
+        
+        repaint();
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
     }
 
 }
