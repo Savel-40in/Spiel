@@ -24,6 +24,7 @@ public class Game {
         s = new StarBar();
         generateEvents();
         updateFoW();
+        animatables.clear();
     }
     
     public void draw(Graphics g) {
@@ -67,9 +68,12 @@ public class Game {
     public void input (MouseEvent e) {
         int mx = e.getX() / GameConstants.CELL_SIZE;
         int my = e.getY() / GameConstants.CELL_SIZE;
-        if (mx < GameConstants.MAP_SIZE && my < GameConstants.MAP_SIZE && !m.getCell(mx, my).isWall() && !f.isFogged(mx, my) && (mx != p.x() || my != p.y())) {
-            p.setMoveQueue(cellsToCoords(BFS(mx, my)));
-            animatables.add(p); // Add the player to the list of animatables to update its movement
+        if (mx < GameConstants.MAP_SIZE && my < GameConstants.MAP_SIZE && m.getCell(mx, my).isVisited()) {
+            p.setMoveQueue(cellsToCoords(m.BFS(p.x(), p.y(), mx, my)));
+            if (!p.isAnimating()) {
+                animatables.add(p);
+                p.setAnimating(true);
+            } // Add the player to the list of animatables to update its movement
             isAnimating = true;
         }
         updateFoW();
@@ -89,55 +93,14 @@ public class Game {
                 animatables.remove(i);
             }
         updateFoW();
-    }
+        }
     }
     	
     private void movePlayer(int newX, int newY) {
     	if (!m.getCell(newX, newY).isWall()) {
     		p.move(newX, newY);
+            m.getCell(newX, newY).setVisited(true);
     	}
-    }
-
-    private List<Cell> BFS(int targetX, int targetY) {
-        // Implement BFS to find the shortest path from the player to the portal
-        // This can be used for pathfinding or for an AI enemy to chase the player
-        Cell[][] parent = new Cell[GameConstants.MAP_SIZE][GameConstants.MAP_SIZE];
-        boolean[][] visited = new boolean[GameConstants.MAP_SIZE][GameConstants.MAP_SIZE];
-        List<Cell> queue = new ArrayList<>();
-        queue.add(m.getCell(p.x(), p.y()));
-        visited[p.x()][p.y()] = true;
-        parent[p.x()][p.y()] = m.getCell(p.x(), p.y());
-        int i = 0;
-        
-        while (i < queue.size()) {
-            Cell current = queue.get(i);
-            
-            if (current.getX() == targetX && current.getY() == targetY) {
-                break;
-            }
-
-            List<int[]> neighbors = m.getNeighbors(current.getX(), current.getY(), 1);
-
-            for (int[] n : neighbors) {
-                if (!m.getCell(n[0], n[1]).isWall() && !visited[n[0]][n[1]] && !f.isFogged(n[0], n[1])) {
-                    visited[n[0]][n[1]] = true;
-                    parent[n[0]][n[1]] = current;
-                    queue.add(m.getCell(n[0], n[1]));
-                }   
-	            
-	        }
-
-            i++;
-	    }
-
-        queue = new ArrayList<>();
-        Cell current = m.getCell(targetX, targetY);
-        while (current != parent[current.getX()][current.getY()]) {
-            queue.add(current);
-            current = parent[current.getX()][current.getY()];
-        }
-        Collections.reverse(queue);
-        return queue;
     }
          
     private List<Cell> coordsToCells(List<int[]> coords) {
@@ -178,6 +141,9 @@ public class Game {
                 int checkX = p.x() + i;
                 int checkY = p.y() + j;
                 f.reveal(checkX, checkY);
+                if ( !m.getCell(checkX, checkY).isWall()){
+                    m.getCell(checkX, checkY).setVisited(true);
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Map {
 	
-	private int MAP_SIZE = GameConstants.MAP_SIZE;;
+	private int MAP_SIZE = GameConstants.MAP_SIZE;
 	private int ROOM_SIZE = GameConstants.MAX_ROOM_SIZE - GameConstants.MIN_ROOM_SIZE;
 	
 	private Cell[][] map;
@@ -146,7 +146,50 @@ public class Map {
 		return validneighbors;
 	}
 	
-	
+	public List<Cell> BFS(int startX, int startY, int targetX, int targetY) {
+		if (startX == targetX && startY == targetY) {
+			return new ArrayList<>(); // No movement needed
+		}
+        // Implement BFS to find the shortest path from the player to the portal
+        // This can be used for pathfinding or for an AI enemy to chase the player
+        Cell[][] parent = new Cell[GameConstants.MAP_SIZE][GameConstants.MAP_SIZE];
+        boolean[][] visited = new boolean[GameConstants.MAP_SIZE][GameConstants.MAP_SIZE];
+        List<Cell> queue = new ArrayList<>();
+        queue.add(getCell(startX, startY));
+        visited[startX][startY] = true;
+        parent[startX][startY] = getCell(startX, startY);
+        int i = 0;
+        
+        while (i < queue.size()) {
+            Cell current = queue.get(i);
+            
+            if (current.getX() == targetX && current.getY() == targetY) {
+                break;
+            }
+
+            List<int[]> neighbors = getNeighbors(current.getX(), current.getY(), 1);
+
+            for (int[] n : neighbors) {
+                if (getCell(n[0], n[1]).isVisited() && !visited[n[0]][n[1]]) {
+                    visited[n[0]][n[1]] = true;
+                    parent[n[0]][n[1]] = current;
+                    queue.add(getCell(n[0], n[1]));
+                }   
+	            
+	        }
+
+            i++;
+	    }
+
+        queue = new ArrayList<>();
+        Cell current = getCell(targetX, targetY);
+        while (current != parent[current.getX()][current.getY()]) {
+            queue.add(current);
+            current = parent[current.getX()][current.getY()];
+        }
+        Collections.reverse(queue);
+        return queue;
+    }
 	
 	
 //	GETTER + SETTER

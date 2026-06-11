@@ -16,6 +16,11 @@ public class Player implements Animatable{
    }
 
    public void update() {
+      if (moveQueue.isEmpty()) {
+         isAnimating = false;
+         return;
+      }
+
       move(moveQueue.get(0)[0], moveQueue.get(0)[1]);
       moveQueue.remove(0);
       isAnimating = !moveQueue.isEmpty();
@@ -24,6 +29,10 @@ public class Player implements Animatable{
    public boolean isAnimating() {
         return isAnimating;
         
+   }
+
+   public void setAnimating(boolean isAnimating) {
+        this.isAnimating = isAnimating;
     }
 
    public void move(int x, int y) {
