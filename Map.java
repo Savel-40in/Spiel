@@ -127,7 +127,7 @@ public class Map {
 		
 	}
 
-	private List<int[]> getNeighbors(int i, int j,  int  distance){
+	public List<int[]> getNeighbors(int i, int j,  int  distance){
 		int[][] neighbors = {
 	        {i, j+distance},
 	        {i+distance, j},

@@ -1,9 +1,7 @@
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Game {
     private Map m;
@@ -67,22 +65,30 @@ public class Game {
     }
 
     public void input (MouseEvent e) {
-        // Handle mouse input if needed
+        int mx = e.getX() / GameConstants.CELL_SIZE;
+        int my = e.getY() / GameConstants.CELL_SIZE;
+        if (mx < GameConstants.MAP_SIZE && my < GameConstants.MAP_SIZE && !m.getCell(mx, my).isWall() && !f.isFogged(mx, my) && (mx != p.x() || my != p.y())) {
+            p.setMoveQueue(cellsToCoords(BFS(mx, my)));
+            animatables.add(p); // Add the player to the list of animatables to update its movement
+            isAnimating = true;
+        }
+        updateFoW();
     }
 
     public void update() {
         isAnimating = false;
         for (int i = animatables.size() - 1; i >= 0; i--) {
 
-        Animatable a = animatables.get(i);
+            Animatable a = animatables.get(i);
 
-        a.update();
+            a.update();
 
-        if (a.isAnimating()) {
-            isAnimating = true;
-        } else {
-            animatables.remove(i);
-        }
+            if (a.isAnimating()) {
+                isAnimating = true;
+            } else {
+                animatables.remove(i);
+            }
+        updateFoW();
     }
     }
     	
@@ -90,6 +96,64 @@ public class Game {
     	if (!m.getCell(newX, newY).isWall()) {
     		p.move(newX, newY);
     	}
+    }
+
+    private List<Cell> BFS(int targetX, int targetY) {
+        // Implement BFS to find the shortest path from the player to the portal
+        // This can be used for pathfinding or for an AI enemy to chase the player
+        Cell[][] parent = new Cell[GameConstants.MAP_SIZE][GameConstants.MAP_SIZE];
+        boolean[][] visited = new boolean[GameConstants.MAP_SIZE][GameConstants.MAP_SIZE];
+        List<Cell> queue = new ArrayList<>();
+        queue.add(m.getCell(p.x(), p.y()));
+        visited[p.x()][p.y()] = true;
+        parent[p.x()][p.y()] = m.getCell(p.x(), p.y());
+        int i = 0;
+        
+        while (i < queue.size()) {
+            Cell current = queue.get(i);
+            
+            if (current.getX() == targetX && current.getY() == targetY) {
+                break;
+            }
+
+            List<int[]> neighbors = m.getNeighbors(current.getX(), current.getY(), 1);
+
+            for (int[] n : neighbors) {
+                if (!m.getCell(n[0], n[1]).isWall() && !visited[n[0]][n[1]] && !f.isFogged(n[0], n[1])) {
+                    visited[n[0]][n[1]] = true;
+                    parent[n[0]][n[1]] = current;
+                    queue.add(m.getCell(n[0], n[1]));
+                }   
+	            
+	        }
+
+            i++;
+	    }
+
+        queue = new ArrayList<>();
+        Cell current = m.getCell(targetX, targetY);
+        while (current != parent[current.getX()][current.getY()]) {
+            queue.add(current);
+            current = parent[current.getX()][current.getY()];
+        }
+        Collections.reverse(queue);
+        return queue;
+    }
+         
+    private List<Cell> coordsToCells(List<int[]> coords) {
+        List<Cell> cells = new ArrayList<>();
+        for (int[] c : coords) {
+            cells.add(m.getCell(c[0], c[1]));
+        }
+        return cells;
+    }
+
+    private List<int[]> cellsToCoords(List<Cell> cells) {
+        List<int[]> coords = new ArrayList<>();
+        for (Cell c : cells) {
+            coords.add(new int[] {c.getX(), c.getY()});
+        }
+        return coords;
     }
 
     private void generateEvents() {

@@ -1,14 +1,30 @@
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
-public class Player {
+public class Player implements Animatable{
    private int x;
    private int y;
+   private List<int[]> moveQueue;
+   private boolean isAnimating = false;
 
 
    public Player(int x, int y) {
       this.x = x;
       this.y = y;
+      this.moveQueue = new ArrayList<>();
    }
+
+   public void update() {
+      move(moveQueue.get(0)[0], moveQueue.get(0)[1]);
+      moveQueue.remove(0);
+      isAnimating = !moveQueue.isEmpty();
+   }
+
+   public boolean isAnimating() {
+        return isAnimating;
+        
+    }
 
    public void move(int x, int y) {
 	   this.x = x;
@@ -26,5 +42,9 @@ public class Player {
    
    public int y() {
 	   return y;
+   }
+
+   public void setMoveQueue(List<int[]> moveQueue) {
+      this.moveQueue = moveQueue;
    }
 }
