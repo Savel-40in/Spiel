@@ -7,6 +7,7 @@ public class Cell {
 	private int neighborCount;
 	private Event event;
 	private boolean isRoom;
+	private boolean isVisited;
 	private int size = GameConstants.CELL_SIZE;
 	
 	public Cell(int x,  int y){
@@ -16,6 +17,7 @@ public class Cell {
 		this.x = x;
 		this.y = y;
 		isRoom = false;
+		isVisited = false;
 	}
 	
 	public void drawCell(Graphics g) {
@@ -85,6 +87,14 @@ public class Cell {
 
 	public void setRoom(boolean isRoom) {
 		this.isRoom = isRoom;
+	}
+
+	public boolean isVisited() {
+		return isVisited;
+	}
+
+	public void setVisited(boolean isVisited) {
+		this.isVisited = isVisited;
 	}
 }
 

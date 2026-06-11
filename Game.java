@@ -1,8 +1,7 @@
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.awt.event.MouseEvent;
+import java.util.*;
 
 public class Game implements Screen{
     private Map m;
@@ -25,6 +24,7 @@ public class Game implements Screen{
         s = new StarBar();
         generateEvents();
         updateFoW();
+        animatables.clear();
     }
     
     public void draw(Graphics g) {
@@ -51,7 +51,7 @@ public class Game implements Screen{
     		newGame();
     	}
 
-        if (key == KeyEvent.VK_E) {
+        if (key == KeyEvent.VK_E || key == KeyEvent.VK_F) {
             Cell currentCell = m.getCell(p.x(), p.y()); 
             currentCell.getEvent().trigger().accept(this);
             currentCell.setEvent(new NoEvent()); // Remove the event after triggering it
@@ -65,26 +65,58 @@ public class Game implements Screen{
     	
     }
 
+    public void input (MouseEvent e) {
+        int mx = e.getX() / GameConstants.CELL_SIZE;
+        int my = e.getY() / GameConstants.CELL_SIZE;
+        if (mx < GameConstants.MAP_SIZE && my < GameConstants.MAP_SIZE && m.getCell(mx, my).isVisited()) {
+            p.setMoveQueue(cellsToCoords(m.BFS(p.x(), p.y(), mx, my)));
+            if (!p.isAnimating()) {
+                animatables.add(p);
+                p.setAnimating(true);
+            } // Add the player to the list of animatables to update its movement
+            isAnimating = true;
+        }
+        updateFoW();
+    }
+
     public void update() {
         isAnimating = false;
         for (int i = animatables.size() - 1; i >= 0; i--) {
 
-        Animatable a = animatables.get(i);
+            Animatable a = animatables.get(i);
 
-        a.update();
+            a.update();
 
-        if (a.isAnimating()) {
-            isAnimating = true;
-        } else {
-            animatables.remove(i);
+            if (a.isAnimating()) {
+                isAnimating = true;
+            } else {
+                animatables.remove(i);
+            }
+        updateFoW();
         }
-    }
     }
     	
     private void movePlayer(int newX, int newY) {
     	if (!m.getCell(newX, newY).isWall()) {
     		p.move(newX, newY);
+            m.getCell(newX, newY).setVisited(true);
     	}
+    }
+         
+    private List<Cell> coordsToCells(List<int[]> coords) {
+        List<Cell> cells = new ArrayList<>();
+        for (int[] c : coords) {
+            cells.add(m.getCell(c[0], c[1]));
+        }
+        return cells;
+    }
+
+    private List<int[]> cellsToCoords(List<Cell> cells) {
+        List<int[]> coords = new ArrayList<>();
+        for (Cell c : cells) {
+            coords.add(new int[] {c.getX(), c.getY()});
+        }
+        return coords;
     }
 
     private void generateEvents() {
@@ -109,6 +141,9 @@ public class Game implements Screen{
                 int checkX = p.x() + i;
                 int checkY = p.y() + j;
                 f.reveal(checkX, checkY);
+                if ( !m.getCell(checkX, checkY).isWall()){
+                    m.getCell(checkX, checkY).setVisited(true);
+                }
             }
         }
     }

@@ -10,6 +10,10 @@ public class FoW {
             }
         }
     }
+
+    public boolean isFogged(int x, int y) {
+        return fogOfWar[x][y];
+    }
     
     public void reveal(int x, int y) {
         fogOfWar[x][y] = false; // Reveal the cell
