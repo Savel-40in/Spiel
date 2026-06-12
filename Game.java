@@ -30,7 +30,7 @@ public class Game implements Screen{
     public void draw(Graphics g) {
 		m.drawMap(g);
     	p.drawPlayer(g);
-//		f.drawFogOfWar(g);
+		f.drawFogOfWar(g);
 		s.drawStars(g);
 	} 
     
@@ -58,7 +58,7 @@ public class Game implements Screen{
         }
 
     	if (key == KeyEvent.VK_ESCAPE) {
-    		ScreenManager.popScreen();
+    		ScreenManager.pushScreen(new PauseScreen());
     	}
 
         updateFoW();

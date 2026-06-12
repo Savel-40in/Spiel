@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public class Menu implements Screen{
 	
@@ -16,6 +17,10 @@ public class Menu implements Screen{
     	}
     	
     }
+
+	public void input(MouseEvent e) {
+		// No mouse input for the menu
+	}
 	
 	public void draw(Graphics g) {
 		g.setColor(Color.DARK_GRAY);

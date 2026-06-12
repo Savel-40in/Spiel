@@ -8,17 +8,18 @@ import java.awt.event.MouseEvent;
 
 public class Painting extends JPanel implements KeyListener, MouseListener {
 
-    Game game = new Game();
+    ScreenManager screenManager = new ScreenManager();
     Timer timer;
 
     public Painting(Frame f){
         addKeyListener(this);
         addMouseListener(this);
         setFocusable(true);
+        ScreenManager.pushScreen(new Menu());
         timer = new Timer(16, e -> {
-            game.update();
+            screenManager.getCurrentScreen().update();
             repaint();
-            if (!game.isAnimating()) {
+            if (!screenManager.getCurrentScreen().isAnimating()) {
                 timer.stop();
             }
         });
@@ -27,14 +28,14 @@ public class Painting extends JPanel implements KeyListener, MouseListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        game.draw(g);
+        screenManager.getCurrentScreen().draw(g);
     
     }
 
     public void keyPressed(KeyEvent e) {
-        game.input(e);
+        screenManager.getCurrentScreen().input(e);
 
-        if (game.isAnimating()) {
+        if (screenManager.getCurrentScreen().isAnimating()) {
             timer.start();
         }
         
@@ -52,9 +53,9 @@ public class Painting extends JPanel implements KeyListener, MouseListener {
     }
 
     public void mousePressed(MouseEvent e) {
-        game.input(e);
+        screenManager.getCurrentScreen().input(e);
 
-        if (game.isAnimating()) {
+        if (screenManager.getCurrentScreen().isAnimating()) {
             timer.start();
         }
         

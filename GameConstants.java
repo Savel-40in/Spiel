@@ -2,6 +2,9 @@ public final class GameConstants {
 
     private GameConstants() {}
 
+    public static final int WINDOW_WIDTH = 1000;
+    public static final int WINDOW_HEIGHT = 800;
+
     public static final int CELL_SIZE = 30;
     public static final int MAP_SIZE = 25;
 
