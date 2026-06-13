@@ -10,6 +10,10 @@ public class PauseScreen implements Screen {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             ScreenManager.popScreen();
         }
+
+        else if (e.getKeyCode() == KeyEvent.VK_Q) {
+            ScreenManager.replaceScreen(new MenuScreen());
+        }
     }
 
     @Override

@@ -17,4 +17,22 @@ public class ScreenManager {
 		screens.pop();
 	}
 
+	public static void replaceScreen(Screen s) {
+		popScreen();
+		pushScreen(s);
+	}
+
+	public static boolean isEmpty() {
+		Screen s = getCurrentScreen();
+		popScreen();
+		boolean empty = screens.isEmpty();
+		pushScreen(s);
+		return empty;
+	}
+
+	public static void clear() {
+		screens.clear();
+	}
+
+
 }
