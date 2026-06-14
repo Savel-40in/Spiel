@@ -28,6 +28,9 @@ public class PauseScreen implements Screen {
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 48));
         g.drawString("PAUSED", GameConstants.WINDOW_WIDTH / 2 - 100, GameConstants.WINDOW_HEIGHT / 2);
+        g.setFont(new Font("Arial", Font.PLAIN, 24));
+        g.drawString("Press ESC to resume", GameConstants.WINDOW_WIDTH / 2 - 100, GameConstants.WINDOW_HEIGHT / 2 + 50);
+        g.drawString("Press Q to quit to menu", GameConstants.WINDOW_WIDTH / 2 - 100, GameConstants.WINDOW_HEIGHT / 2 + 80);
     }
 
     @Override
