@@ -11,6 +11,7 @@ public class Map {
 
 	private List<Cell> rooms = new ArrayList<>();
 	private List<Cell> ends = new ArrayList<>();
+	private List<Cell> corridors = new ArrayList<>();
 	
 	private Random random = new Random();
 	
@@ -46,6 +47,9 @@ public class Map {
 				map[i][j].setNeighborCount(countOpenNeighbors(i, j));
 				if (!map[i][j].isWall() && countOpenNeighbors(i, j) == 1) {
 					ends.add(map[i][j]);
+				}
+				if (!map[i][j].isWall() && countOpenNeighbors(i, j) > 1) {
+					corridors.add(map[i][j]);
 				}
 		    }
 		}
@@ -215,6 +219,10 @@ public class Map {
 
 	public List<Cell> getEnds() {
 		return ends;
+	}
+
+	public List<Cell> getCorridors() {
+		return corridors;
 	}
 
 }

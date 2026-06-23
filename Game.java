@@ -10,6 +10,8 @@ public class Game implements Screen{
     private List<Animatable> animatables = new ArrayList<>();
     private boolean isAnimating = false;
     private FoW f;
+    private List<Enemy> enemies = new ArrayList<>();
+    
 
     private Random random = new Random();
     
@@ -22,15 +24,18 @@ public class Game implements Screen{
         m = new Map();
         f = new FoW();
         s = new StarBar();
+        enemies.clear();
         generateEvents();
         updateFoW();
-        animatables.clear();
+        animatables.clear(); 
+
     }
     
     public void draw(Graphics g) {
 		m.drawMap(g);
     	p.drawPlayer(g);
-		f.drawFogOfWar(g);
+    	drawEnemies(g);
+		// f.drawFogOfWar(g);
 		s.drawStars(g);
 	} 
     
@@ -47,17 +52,21 @@ public class Game implements Screen{
         	 movePlayer(p.x()+1, p.y());
         }
     	
-    	if (key == KeyEvent.VK_R) {
+    	else if (key == KeyEvent.VK_R) {
     		newGame();
     	}
 
-        if (key == KeyEvent.VK_E || key == KeyEvent.VK_F) {
+        else if (key == KeyEvent.VK_B) {
+            ScreenManager.pushScreen(new Battle());
+        }
+
+        else  if (key == KeyEvent.VK_E || key == KeyEvent.VK_F) {
             Cell currentCell = m.getCell(p.x(), p.y()); 
             currentCell.getEvent().trigger().accept(this);
             currentCell.setEvent(new NoEvent()); // Remove the event after triggering it
         }
 
-    	if (key == KeyEvent.VK_ESCAPE) {
+    	else if (key == KeyEvent.VK_ESCAPE) {
     		ScreenManager.pushScreen(new PauseScreen());
     	}
 
@@ -99,8 +108,32 @@ public class Game implements Screen{
     private void movePlayer(int newX, int newY) {
     	if (!m.getCell(newX, newY).isWall()) {
     		p.move(newX, newY);
-            m.getCell(newX, newY).setVisited(true);
+            for (Enemy e : enemies) {
+                if (e.x() == newX && e.y() == newY) {
+                    ScreenManager.pushScreen(new Battle());
+                    enemies.remove(e);
+                    break;
+                }
+            }
+            moveEnemy();
     	}
+    }
+
+    private void moveEnemy() {
+        for (Enemy e : enemies) {
+            List<int[]> directions = m.getNeighbors(e.x(), e.y(), 1);
+            Collections.shuffle(directions);
+            for (int[] d : directions) {
+                if (!m.getCell(d[0], d[1]).isWall()) {
+                    e.move(d[0], d[1]);
+                    break;
+                }
+            }
+            if (e.x() == p.x() && e.y() == p.y()) {
+                ScreenManager.pushScreen(new Battle());
+                enemies.remove(e);
+            }
+        }
     }
          
     private List<Cell> coordsToCells(List<int[]> coords) {
@@ -126,6 +159,14 @@ public class Game implements Screen{
             m.getRooms().remove(index); // Remove the room from the list to avoid placing multiple events in the same room
         }
 
+        for (int i = 0; i < GameConstants.ENEMY_COUNT; i++) {
+            int index = random.nextInt(m.getCorridors().size());
+            Cell corridorCell = m.getCorridors().get(index);
+            Enemy enemy = new Enemy(corridorCell.getX(), corridorCell.getY());
+            enemies.add(enemy);
+            m.getCorridors().remove(index); // Remove the corridor from the list to avoid placing multiple enemies in the same corridor
+        }
+
         // for (Cell end : m.getEnds()) {
         //     if (Math.random() < 0.3) {
         //         end.setEvent(new ChestEvent());
@@ -145,6 +186,12 @@ public class Game implements Screen{
                     m.getCell(checkX, checkY).setVisited(true);
                 }
             }
+        }
+    }
+
+    private void drawEnemies(Graphics g) {
+        for (Enemy e : enemies) {
+            e.drawPlayer(g);
         }
     }
 

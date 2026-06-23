@@ -25,16 +25,15 @@ public class Cell {
 			g.setColor(Color.BLACK);
 		}else if (isRoom) {
 			g.setColor(Color.GRAY);
-		}else if (neighborCount < 2){
-			g.setColor(Color.RED);
-		}else if (neighborCount > 2){
-			g.setColor(Color.BLUE);
 		}else {
 			g.setColor(Color.DARK_GRAY);
 		}
 		
 		g.fillRect(x*size, y*size, size, size);
 		event.draw(g, x, y);
+		
+		g.setColor(Color.BLACK);
+		g.drawRect(x*size, y*size, size, size);
 	}
 
 
