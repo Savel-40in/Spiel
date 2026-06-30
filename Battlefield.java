@@ -2,11 +2,12 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Grid {
+public class Battlefield {
     private int width;
     private int height;
     private  Hex[][] hexes;
-    public Grid(int width, int height) {
+    
+    public Battlefield(int width, int height) {
         this.width = width;
         this.height = height;
         this.hexes = new Hex[width][height];
@@ -21,7 +22,8 @@ public class Grid {
             }
         }
     }
-    public void drawGrid(Graphics g) {
+    
+    public void draw(Graphics g) {
         for (int col = 0; col < width; col++) {
             for (int row = 0; row < height; row++) {
                 hexes[col][row].drawHex(g);
@@ -69,3 +71,4 @@ public class Grid {
 
     
 }
+

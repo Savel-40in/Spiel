@@ -3,12 +3,12 @@ import java.awt.*;
 public class Hex {
     private int q; // axial coordinate
     private int r; // axial coordinate
-    private int s; // derived coordinate (s = -q - r)
+    // private int s; // derived coordinate (s = -q - r)
 
     public Hex(int q, int r) {
         this.q = q;
         this.r = r;
-        this.s = -q - r;
+        // this.s = -q - r;
     }
 
     public void drawHex(Graphics g) {
@@ -29,7 +29,7 @@ public class Hex {
     }
 
     public boolean equals(Hex other) {
-        return this.q == other.q && this.r == other.r && this.s == other.s;
+        return this.q == other.q && this.r == other.r /* && this.s == other.s */ ;
     }
 
     public int getQ() {

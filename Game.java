@@ -11,6 +11,8 @@ public class Game implements Screen{
     private boolean isAnimating = false;
     private FoW f;
     private List<Enemy> enemies = new ArrayList<>();
+
+    private Party playerParty = new Party();
     
 
     private Random random = new Random();
@@ -18,6 +20,9 @@ public class Game implements Screen{
     public Game() {
         p = new Player(1, 1);
         newGame();
+        playerParty.addEntity(new BattleEnemy()); // Add a BattleEnemy to the player's party for testing
+        playerParty.addEntity(new BattleEnemy()); // Add a BattleEnemy to the player's party for testing
+        playerParty.addEntity(new BattleEnemy()); // Add a BattleEnemy to the player's party for testing
     }
 
     public void newGame() {
@@ -57,7 +62,7 @@ public class Game implements Screen{
     	}
 
         else if (key == KeyEvent.VK_B) {
-            ScreenManager.pushScreen(new Battle());
+            ScreenManager.pushScreen(new Battle(new Party(), new Party()));
         }
 
         else  if (key == KeyEvent.VK_E || key == KeyEvent.VK_F) {
@@ -108,20 +113,30 @@ public class Game implements Screen{
     private void movePlayer(int newX, int newY) {
     	if (!m.getCell(newX, newY).isWall()) {
     		p.move(newX, newY);
-            for (Enemy e : enemies) {
+            Party enemyParty = new Party();
+            enemyParty.setSide(1); // Set the side to enemies
+            for (int i = 0; i < enemies.size(); i++) {
+                Enemy e = enemies.get(i);
                 if (e.x() == newX && e.y() == newY) {
-                    ScreenManager.pushScreen(new Battle());
-                    enemies.remove(e);
-                    break;
+                    enemyParty.addEntity(new BattleEnemy());
+                    enemies.remove(i);
+                    i--; // Adjust the index after removing an enemy
                 }
+            }
+            if (!enemyParty.getEntities().isEmpty()) {
+                ScreenManager.pushScreen(new Battle(playerParty, enemyParty));
             }
             moveEnemy();
     	}
     }
 
     private void moveEnemy() {
-        for (Enemy e : enemies) {
+        Party enemyParty = new Party();
+        enemyParty.setSide(1); // Set the side to enemies
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemy e = enemies.get(i);
             List<int[]> directions = m.getNeighbors(e.x(), e.y(), 1);
+            directions.add(new int[] {e.x(), e.y()}); // Add the option to stay in place
             Collections.shuffle(directions);
             for (int[] d : directions) {
                 if (!m.getCell(d[0], d[1]).isWall()) {
@@ -130,9 +145,13 @@ public class Game implements Screen{
                 }
             }
             if (e.x() == p.x() && e.y() == p.y()) {
-                ScreenManager.pushScreen(new Battle());
+                enemyParty.addEntity(new BattleEnemy());
                 enemies.remove(e);
+                i--; // Adjust the index after removing an enemy
             }
+        }
+        if (!enemyParty.getEntities().isEmpty()) {
+            ScreenManager.pushScreen(new Battle(playerParty, enemyParty));
         }
     }
          
