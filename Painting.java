@@ -16,7 +16,7 @@ public class Painting extends JPanel implements KeyListener, MouseListener {
         addMouseListener(this);
         setFocusable(true);
         ScreenManager.pushScreen(new MenuScreen());
-        timer = new Timer(16, e -> {
+        timer = new Timer(1000, e -> {
             screenManager.getCurrentScreen().update();
             repaint();
             if (!screenManager.getCurrentScreen().isAnimating()) {

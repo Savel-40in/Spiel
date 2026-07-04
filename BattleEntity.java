@@ -1,13 +1,19 @@
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
-public abstract class BattleEntity {
+public abstract class BattleEntity implements Animatable {
     protected int q;
     protected int r;
     protected int speed;
     protected int stackSize;
     protected int maxHealthPerEntity;
     protected int health;
-    protected int attackPowerPerEntity;
+    protected int maxAttack;
+    protected int minAttack;
+    protected int side; // 0 - allies, 1 - enemies
+    protected List<int[]> path;
+    protected int stepCount = 0;
 
     private int size = 30;
     protected Color color;
@@ -22,6 +28,24 @@ public abstract class BattleEntity {
         g.drawOval(x, y, size, size);
         g.drawString(""+stackSize, x + size / 2, y + size / 2);
 
+    }
+
+    public void setPath(List<int[]> path) {
+        this.path = path;
+    }
+
+    public void update() {
+        if (path.isEmpty() || stepCount > speed) {
+            stepCount = 0;
+            return;
+        }
+        stepCount++;
+        move(path.get(0)[0], path.get(0)[1]);
+        path.remove(0); 
+    }
+
+    public boolean isAnimating() {
+        return !path.isEmpty() && stepCount != 0;
     }
 
 
@@ -47,7 +71,11 @@ public abstract class BattleEntity {
     }
 
     public int getDamage() {
-        return attackPowerPerEntity*stackSize;
+        int damage = 0;
+        for(int i = 0; i < stackSize; i++) {
+            damage += (int) (Math.random() * (maxAttack - minAttack + 1)) + minAttack;
+        }
+        return damage;
     }
 
     public void takeDamage(int damage) {
@@ -60,6 +88,14 @@ public abstract class BattleEntity {
 
     public boolean isAlive() {
         return health > 0;
+    }
+
+    public void setSide(int side) {
+        this.side = side;
+    }
+
+    public int getSide() {
+        return side;
     }
 
 }

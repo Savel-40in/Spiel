@@ -4,6 +4,7 @@ public class Hex {
     private int q; // axial coordinate
     private int r; // axial coordinate
     // private int s; // derived coordinate (s = -q - r)
+    private BattleEntity entity = null; // The entity occupying this hex, if any
 
     public Hex(int q, int r) {
         this.q = q;
@@ -38,6 +39,27 @@ public class Hex {
 
     public int getR() {
         return r;
+    }
+
+    public BattleEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(BattleEntity entity) {
+        this.entity = entity;
+    }
+
+    public boolean isOccupied() {
+        return entity != null;
+    }
+
+    public void removeEntity() {
+        this.entity = null;
+    }
+
+
+    public int distanceTo(Hex other) {
+        return (Math.abs(this.q - other.q) + Math.abs(this.q + this.r - other.q - other.r) + Math.abs(this.r - other.r)) / 2;
     }
 
 }

@@ -20,9 +20,9 @@ public class Game implements Screen{
     public Game() {
         p = new Player(1, 1);
         newGame();
-        playerParty.addEntity(new BattleEnemy()); // Add a BattleEnemy to the player's party for testing
-        playerParty.addEntity(new BattleEnemy()); // Add a BattleEnemy to the player's party for testing
-        playerParty.addEntity(new BattleEnemy()); // Add a BattleEnemy to the player's party for testing
+        playerParty.addEntity(new BattlePlayer()); 
+        playerParty.setSide(0); // Set the side to allies
+        playerParty.deployUnits();
     }
 
     public void newGame() {

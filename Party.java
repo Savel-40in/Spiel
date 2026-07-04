@@ -21,10 +21,11 @@ public class Party {
         entities.remove(entity);
     }
 
-    private void deployUnits() {
+    public void deployUnits() {
         int spacing = (GameConstants.BATTLEFIELD_HEIGHT + 1) / (entities.size() + 1);
         for (int i = 0; i < entities.size(); i++) {
             BattleEntity entity = entities.get(i);
+            entity.setSide(side);
             int col = side * (GameConstants.BATTLEFIELD_WIDTH - 1); // 0 for allies, width-1 for enemies
             int row = (i + 1) * spacing - 1; // Deploy in a vertical line
 
