@@ -11,7 +11,7 @@ public class PortalEvent extends Event {
     public Consumer<Game> trigger() {
         return (game) -> {
 
-            game.newGame();
+            game.newLevel();
 
         };
     }

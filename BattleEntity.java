@@ -81,7 +81,7 @@ public abstract class BattleEntity implements Animatable {
     public void takeDamage(int damage) {
         health -= damage;
         if (health < 0) {
-            health = 0; // Ensure health doesn't go below 0
+            health = 0; 
         }
         stackSize = (int) Math.ceil((double) health / maxHealthPerEntity); // Update stack size based on health
     }

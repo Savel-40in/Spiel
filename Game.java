@@ -19,13 +19,13 @@ public class Game implements Screen{
     
     public Game() {
         p = new Player(1, 1);
-        newGame();
+        newLevel();
         playerParty.addEntity(new BattlePlayer()); 
         playerParty.setSide(0); // Set the side to allies
         playerParty.deployUnits();
     }
 
-    public void newGame() {
+    public void newLevel() {
         m = new Map();
         f = new FoW();
         s = new StarBar();
@@ -58,7 +58,7 @@ public class Game implements Screen{
         }
     	
     	else if (key == KeyEvent.VK_R) {
-    		newGame();
+    		newLevel();
     	}
 
         else if (key == KeyEvent.VK_B) {

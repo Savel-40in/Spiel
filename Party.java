@@ -21,6 +21,10 @@ public class Party {
         entities.remove(entity);
     }
 
+    public boolean isEmpty() {
+        return entities.isEmpty();
+    }
+
     public void deployUnits() {
         int spacing = (GameConstants.BATTLEFIELD_HEIGHT + 1) / (entities.size() + 1);
         for (int i = 0; i < entities.size(); i++) {

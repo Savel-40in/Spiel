@@ -23,13 +23,13 @@ public class Battlefield {
         }
     }
 
-    private int offsetToAxial(int col, int row) {
+    public int offsetToAxial(int col, int row) {
         int q = col - (row - (row % 2)) / 2;
         // int r = row;
         return q;
     }
 
-    private int axialToOffset(int q, int r) {
+    public int axialToOffset(int q, int r) {
         int col = q + (r - (r % 2)) / 2;
         // int row = r;
         return col;
@@ -120,6 +120,7 @@ public class Battlefield {
             path.add(current);
             current = parents[col][current.getR()];
         }
+        path.remove(0); //Remove the ending hex with the ally entity to avoid moving onto it
         Collections.reverse(path);
         
         return path;

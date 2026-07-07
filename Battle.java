@@ -41,6 +41,8 @@ public class Battle implements Screen{
                 isAnimating = true;
             } else {
                 animatables.remove(i);
+
+                attack();
                 
                 nextTurn();
             }
@@ -54,7 +56,9 @@ public class Battle implements Screen{
     public void draw(Graphics g) {
         b.draw(g);
         for (BattleEntity entity : battleEntities) {
-            entity.draw(g);
+            if (entity.isAlive()) {
+                entity.draw(g);
+            }
         }
 
     }
@@ -91,6 +95,36 @@ public class Battle implements Screen{
             enemyAction(currentEntity);
         }
         
+    }
+
+    private void attack() {
+        BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
+        if (!currentEntity.isAlive()) {
+            return; // Skip dead entities
+        }
+        List<Hex> neighbors = b.getNeighbors(b.getHex(b.axialToOffset(currentEntity.q(), currentEntity.r()), currentEntity.r()));
+        for (Hex neighbor : neighbors) {
+            if (neighbor.isOccupied() && neighbor.getEntity().getSide() != currentEntity.getSide()) {
+                BattleEntity target = neighbor.getEntity();
+
+                int damage = currentEntity.getDamage();
+                target.takeDamage(damage);
+                System.out.println("Entity at (" + target.q() + ", " + target.r() + ") took " + damage + " damage. Remaining health: " + target.getHealth());
+                if (!target.isAlive()) {
+                    b.getHex(b.axialToOffset(target.q(), target.r()), target.r()).setEntity(null);
+                    System.out.println("Entity at (" + target.q() + ", " + target.r() + ") has been defeated.");
+                    playerParty.removeEntity(target);
+                    if (playerParty.isEmpty()) {
+                        System.out.println("All player entities have been defeated. Game Over.");
+                        ScreenManager.popScreen(); // Exit the battle screen
+                    }
+                }
+
+                break; // Attack only one enemy per turn
+                
+            }
+            
+        }
     }
 
     private void enemyAction(BattleEntity entity) {
