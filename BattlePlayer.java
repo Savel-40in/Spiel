@@ -6,7 +6,7 @@ public class BattlePlayer extends BattleEntity {
         this.color = Color.BLUE;
         this.q = 0;
         this.r = 0;
-        this.speed = 1;
+        this.speed = 5;
         this.stackSize = 10;
         this.maxHealthPerEntity = 10; // Fixed health for player
         this.health = maxHealthPerEntity * stackSize;

@@ -23,6 +23,14 @@ public class Battlefield {
         }
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public int offsetToAxial(int col, int row) {
         int q = col - (row - (row % 2)) / 2;
         // int r = row;
@@ -42,10 +50,13 @@ public class Battlefield {
         Hex[][] parents = new Hex[width][height];
         boolean[][] visited = new boolean[width][height];
         List<Hex> queue = new ArrayList<>();
+
+        int startCol = axialToOffset(startQ, startR);
+        int endCol = axialToOffset(endQ, endR);
         
-        queue.add(hexes[axialToOffset(startQ, startR)][startR]);
-        visited[axialToOffset(startQ, startR)][startR] = true;
-        parents[axialToOffset(startQ, startR)][startR] = hexes[axialToOffset(startQ, startR)][startR];
+        queue.add(hexes[startCol][startR]);
+        visited[startCol][startR] = true;
+        parents[startCol][startR] = hexes[startCol][startR];
 
         int i = 0;
         while (i < queue.size()) {
@@ -132,6 +143,14 @@ public class Battlefield {
         int row = entity.r();
         if (col >= 0 && col < width && row >= 0 && row < height) {
             hexes[col][row].setEntity(entity);
+        }
+    }
+
+    public void removeEntity(BattleEntity entity) {
+        int col = axialToOffset(entity.q(), entity.r());
+        int row = entity.r();
+        if (col >= 0 && col < width && row >= 0 && row < height) {
+            hexes[col][row].removeEntity();
         }
     }
 

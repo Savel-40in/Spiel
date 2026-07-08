@@ -30,12 +30,21 @@ public abstract class BattleEntity implements Animatable {
 
     }
 
+    public String toString() {
+        return "BattleEntity at (" + q + ", " + r + ") with health: " + health + " and stack size: " + stackSize;
+    }
+
+    public void RestoreStackHealth() {
+        this.health = maxHealthPerEntity * stackSize;
+    }
+
     public void setPath(List<int[]> path) {
         this.path = path;
+        stepCount = 0;
     }
 
     public void update() {
-        if (path.isEmpty() || stepCount > speed) {
+        if (path.isEmpty() || stepCount >= speed) {
             stepCount = 0;
             return;
         }

@@ -5,32 +5,54 @@ public class Hex {
     private int r; // axial coordinate
     // private int s; // derived coordinate (s = -q - r)
     private BattleEntity entity = null; // The entity occupying this hex, if any
+    private Polygon hexagon; // The polygon representing the hex shape
+    
 
     public Hex(int q, int r) {
         this.q = q;
         this.r = r;
         // this.s = -q - r;
-    }
 
-    public void drawHex(Graphics g) {
         int size = GameConstants.HEX_SIZE;
         int x = (int) (size * Math.sqrt(3) * (this.q + this.r / 2.0)) + size;
         int y = (int) (size * 3 / 2.0 * this.r) + size;
-        Polygon hexagon = new Polygon();
+        this.hexagon = new Polygon();
         for (int i = 0; i < 6; i++) {
-            double angle = Math.toRadians(60 * i - 30);
+            double angle = Math.toRadians(60.0 * i - 30);
             int dx = (int) ((size * Math.cos(angle)) + 0.5); // 1: Round to nearest integer
             int dy = (int) ((size * Math.sin(angle)) + 0.5); // 1: Round to nearest integer
-            hexagon.addPoint(x + dx, y + dy);
+            this.hexagon.addPoint(x + dx, y + dy);
         }
+    }
+
+    public boolean isClicked(int mouseX, int mouseY) {
+        return hexagon.contains(mouseX, mouseY);
+    }
+
+    public void drawHex(Graphics g) {
         g.setColor(Color.GRAY);
         g.fillPolygon(hexagon);
         g.setColor(Color.BLACK);
         g.drawPolygon(hexagon);
     }
 
-    public boolean equals(Hex other) {
-        return this.q == other.q && this.r == other.r /* && this.s == other.s */ ;
+    public void drawHexPlayerTurn(Graphics g) {
+        g.setColor(Color.DARK_GRAY);
+        g.fillPolygon(hexagon);
+        
+    }
+
+    public void drawFramePlayerTurn(Graphics g) {
+        g.setColor(Color.BLACK);
+        if (entity != null) { 
+            if (entity.getSide() == 1){
+                g.setColor(Color.RED);
+            } else {
+                g.setColor(Color.BLUE);
+            }
+            
+        }
+        g.drawPolygon(hexagon);
     }
 
     public int getQ() {

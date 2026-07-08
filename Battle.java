@@ -15,6 +15,7 @@ public class Battle implements Screen{
     private int currentEntityIndex = 0;
     private boolean isPlayerTurn = false;
     private List<Animatable> animatables = new ArrayList<>();
+    private List<Hex> validHex;
 
 
     public Battle(Party playerParty, Party enemyParty) {
@@ -55,6 +56,25 @@ public class Battle implements Screen{
     
     public void draw(Graphics g) {
         b.draw(g);
+        
+        if (isPlayerTurn) {
+            validHex = new ArrayList<>();
+            BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
+            Hex currentHex = b.getHex(b.axialToOffset(currentEntity.q(), currentEntity.r()), currentEntity.r());
+            for (int i = 0; i < b.getWidth(); i++) {
+                for (int j = 0; j < b.getHeight(); j++) {
+                    Hex hex = b.getHex(i, j); 
+                    if (currentHex.distanceTo(hex) <= currentEntity.speed()) {
+                        hex.drawHexPlayerTurn(g);
+                    } 
+                    if (currentHex.distanceTo(hex) <= currentEntity.speed() + 1) {
+                        hex.drawFramePlayerTurn(g);
+                        validHex.add(hex);
+                    }
+                }
+            }
+        }
+
         for (BattleEntity entity : battleEntities) {
             if (entity.isAlive()) {
                 entity.draw(g);
@@ -73,10 +93,45 @@ public class Battle implements Screen{
     }
     public void input(MouseEvent e) {
         if (isPlayerTurn) {
-            isPlayerTurn = false;
-            nextTurn();  
+            for (Hex hex : validHex) {
+                if (hex.isClicked(e.getX(), e.getY())) {
+                    BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
+                    
+                    List<int[]> path = hexesToCoords(b.findPath(currentEntity.q(), currentEntity.r(), hex.getQ(), hex.getR()));
+                    currentEntity.setPath(path);
+                    animatables.add(currentEntity);
+                    isAnimating = true;
+                    b.removeEntity(currentEntity);
+
+                    if (hex.isOccupied() && hex.getEntity().getSide() == 1) {
+                        hex.getEntity().takeDamage(currentEntity.getDamage());
+                        System.out.println("Entity at (" + hex.getEntity().q() + ", " + hex.getEntity().r() + ") took " + currentEntity.getDamage() + " damage. Remaining health: " + hex.getEntity().getHealth());
+                        if (!hex.getEntity().isAlive()) {
+                            enemyParty.removeEntity(hex.getEntity());
+                            if (enemyParty.isEmpty()) {
+                                System.out.println("All enemy entities have been defeated. Victory!");
+                                restorePlayerPartyHealth();
+                                ScreenManager.replaceScreen(new VictoryScreen());
+                            }
+                            b.removeEntity(hex.getEntity());
+                        }
+                    }
+                    
+                    isPlayerTurn = false;
+                }
+            }
+        }
+            
+        
+    
+    }
+
+    private void restorePlayerPartyHealth() {
+        for (BattleEntity entity : playerParty.getEntities()) {
+            entity.RestoreStackHealth();
         }
     }
+    
 
     private void nextTurn() {
         int previousIndex = (currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size();
@@ -84,6 +139,12 @@ public class Battle implements Screen{
         b.placeEntity(previousEntity);
         BattleEntity currentEntity = battleEntities.get(currentEntityIndex);
         currentEntityIndex = (currentEntityIndex + 1) % battleEntities.size();
+
+        System.out.println("Current Entity Index: " + previousIndex);
+        System.out.println(currentEntity.toString());
+        System.out.println("----------------------------------------------------");
+
+
         if (!currentEntity.isAlive()) {
             nextTurn();
             return;
@@ -99,8 +160,8 @@ public class Battle implements Screen{
 
     private void attack() {
         BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
-        if (!currentEntity.isAlive()) {
-            return; // Skip dead entities
+        if (!currentEntity.isAlive() || currentEntity.getSide() == 0) {
+            return; // Skip dead entities and player
         }
         List<Hex> neighbors = b.getNeighbors(b.getHex(b.axialToOffset(currentEntity.q(), currentEntity.r()), currentEntity.r()));
         for (Hex neighbor : neighbors) {
@@ -116,7 +177,7 @@ public class Battle implements Screen{
                     playerParty.removeEntity(target);
                     if (playerParty.isEmpty()) {
                         System.out.println("All player entities have been defeated. Game Over.");
-                        ScreenManager.popScreen(); // Exit the battle screen
+                        ScreenManager.pushScreen(new DefeatScreen()); 
                     }
                 }
 
@@ -132,6 +193,7 @@ public class Battle implements Screen{
         entity.setPath(path);
         animatables.add(entity);
         isAnimating = true;
+        b.removeEntity(entity);
     }
 
     private List<int[]> hexesToCoords(List<Hex> hexes) {
