@@ -51,9 +51,7 @@ public class Battlefield {
         boolean[][] visited = new boolean[width][height];
         List<Hex> queue = new ArrayList<>();
 
-        int startCol = axialToOffset(startQ, startR);
-        int endCol = axialToOffset(endQ, endR);
-        
+        int startCol = axialToOffset(startQ, startR);        
         queue.add(hexes[startCol][startR]);
         visited[startCol][startR] = true;
         parents[startCol][startR] = hexes[startCol][startR];
@@ -67,7 +65,7 @@ public class Battlefield {
             for (Hex neighbor : getNeighbors(current)) {
                 int col = axialToOffset(neighbor.getQ(), neighbor.getR());
                 int row = neighbor.getR();
-                if (!visited[col][row] && !neighbor.isOccupied()) {
+                if (!visited[col][row] && !neighbor.isOccupied() || (neighbor.isOccupied() && neighbor.getQ() == endQ && neighbor.getR() == endR)) { // я не знаю почему без этой проверки не работает, но без неё не работает
                     visited[col][row] = true;
                     parents[col][row] = current;
                     queue.add(neighbor);

@@ -16,6 +16,7 @@ public class Battle implements Screen{
     private boolean isPlayerTurn = false;
     private List<Animatable> animatables = new ArrayList<>();
     private List<Hex> validHex;
+    private Hex clickedHex;
 
 
     public Battle(Party playerParty, Party enemyParty) {
@@ -36,7 +37,9 @@ public class Battle implements Screen{
 
             Animatable a = animatables.get(i);
 
+
             a.update();
+
 
             if (a.isAnimating()) {
                 isAnimating = true;
@@ -44,7 +47,7 @@ public class Battle implements Screen{
                 animatables.remove(i);
 
                 attack();
-                
+
                 nextTurn();
             }
         }
@@ -82,19 +85,20 @@ public class Battle implements Screen{
         }
 
     }
-    public void input(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            ScreenManager.popScreen();
-        }
-        if (isPlayerTurn) {
-            isPlayerTurn = false;
-            nextTurn();  
-        }
+    public void input(KeyEvent e) { // сделать отдельный экран паузы для боёвки, со скоростью анимации и т.д. и кнопкой выхода в меню
+        // if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        //     ScreenManager.popScreen();
+        // }
+        // if (isPlayerTurn) {
+        //     isPlayerTurn = false;
+        //     nextTurn();  
+        // }
     }
     public void input(MouseEvent e) {
         if (isPlayerTurn) {
             for (Hex hex : validHex) {
                 if (hex.isClicked(e.getX(), e.getY())) {
+                    clickedHex = hex;
                     BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
                     
                     List<int[]> path = hexesToCoords(b.findPath(currentEntity.q(), currentEntity.r(), hex.getQ(), hex.getR()));
@@ -102,22 +106,9 @@ public class Battle implements Screen{
                     animatables.add(currentEntity);
                     isAnimating = true;
                     b.removeEntity(currentEntity);
-
-                    if (hex.isOccupied() && hex.getEntity().getSide() == 1) {
-                        hex.getEntity().takeDamage(currentEntity.getDamage());
-                        System.out.println("Entity at (" + hex.getEntity().q() + ", " + hex.getEntity().r() + ") took " + currentEntity.getDamage() + " damage. Remaining health: " + hex.getEntity().getHealth());
-                        if (!hex.getEntity().isAlive()) {
-                            enemyParty.removeEntity(hex.getEntity());
-                            if (enemyParty.isEmpty()) {
-                                System.out.println("All enemy entities have been defeated. Victory!");
-                                restorePlayerPartyHealth();
-                                ScreenManager.replaceScreen(new VictoryScreen());
-                            }
-                            b.removeEntity(hex.getEntity());
-                        }
-                    }
                     
                     isPlayerTurn = false;
+                    break; // Exit the loop after processing the clicked hex
                 }
             }
         }
@@ -140,9 +131,6 @@ public class Battle implements Screen{
         BattleEntity currentEntity = battleEntities.get(currentEntityIndex);
         currentEntityIndex = (currentEntityIndex + 1) % battleEntities.size();
 
-        System.out.println("Current Entity Index: " + previousIndex);
-        System.out.println(currentEntity.toString());
-        System.out.println("----------------------------------------------------");
 
 
         if (!currentEntity.isAlive()) {
@@ -160,9 +148,25 @@ public class Battle implements Screen{
 
     private void attack() {
         BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
-        if (!currentEntity.isAlive() || currentEntity.getSide() == 0) {
+        if (!currentEntity.isAlive()) {
             return; // Skip dead entities and player
         }
+
+        if (currentEntity.getSide() == 0) {
+            if (clickedHex.isOccupied() && clickedHex.getEntity().getSide() == 1) {
+                        clickedHex.getEntity().takeDamage(currentEntity.getDamage());
+                        if (!clickedHex.getEntity().isAlive()) {
+                            enemyParty.removeEntity(clickedHex.getEntity());
+                            if (enemyParty.isEmpty()) {
+                                restorePlayerPartyHealth();
+                                ScreenManager.replaceScreen(new VictoryScreen());
+                            }
+                            b.removeEntity(clickedHex.getEntity());
+                        }
+                    }
+            return; // Skip player entities
+        }
+
         List<Hex> neighbors = b.getNeighbors(b.getHex(b.axialToOffset(currentEntity.q(), currentEntity.r()), currentEntity.r()));
         for (Hex neighbor : neighbors) {
             if (neighbor.isOccupied() && neighbor.getEntity().getSide() != currentEntity.getSide()) {
@@ -170,13 +174,10 @@ public class Battle implements Screen{
 
                 int damage = currentEntity.getDamage();
                 target.takeDamage(damage);
-                System.out.println("Entity at (" + target.q() + ", " + target.r() + ") took " + damage + " damage. Remaining health: " + target.getHealth());
                 if (!target.isAlive()) {
                     b.getHex(b.axialToOffset(target.q(), target.r()), target.r()).setEntity(null);
-                    System.out.println("Entity at (" + target.q() + ", " + target.r() + ") has been defeated.");
                     playerParty.removeEntity(target);
                     if (playerParty.isEmpty()) {
-                        System.out.println("All player entities have been defeated. Game Over.");
                         ScreenManager.pushScreen(new DefeatScreen()); 
                     }
                 }
