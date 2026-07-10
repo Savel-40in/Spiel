@@ -50,9 +50,7 @@ public class Painting extends JPanel implements KeyListener, MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-    }
 
-    public void mousePressed(MouseEvent e) {
         screenManager.getCurrentScreen().input(e);
 
         if (screenManager.getCurrentScreen().isAnimating()) {
@@ -60,6 +58,9 @@ public class Painting extends JPanel implements KeyListener, MouseListener {
         }
         
         repaint();
+    }
+
+    public void mousePressed(MouseEvent e) {
     }
 
     public void mouseReleased(MouseEvent e) {

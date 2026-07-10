@@ -96,12 +96,16 @@ public class Battle implements Screen{
     }
     public void input(MouseEvent e) {
         if (isPlayerTurn) {
+            BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
+
             for (Hex hex : validHex) {
-                if (hex.isClicked(e.getX(), e.getY())) {
+                if (hex.isClicked(e.getX(), e.getY()) && !(hex.getQ() == currentEntity.q() && hex.getR() == currentEntity.r())) {
                     clickedHex = hex;
-                    BattleEntity currentEntity = battleEntities.get((currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size());
                     
                     List<int[]> path = hexesToCoords(b.findPath(currentEntity.q(), currentEntity.r(), hex.getQ(), hex.getR()));
+                    if (hex.isOccupied() && hex.getEntity().getSide() != currentEntity.getSide()) {
+                        path.remove(path.size() - 1); // Remove the last hex if it's occupied by an enemy
+                    }
                     currentEntity.setPath(path);
                     animatables.add(currentEntity);
                     isAnimating = true;
@@ -127,7 +131,9 @@ public class Battle implements Screen{
     private void nextTurn() {
         int previousIndex = (currentEntityIndex - 1 + battleEntities.size()) % battleEntities.size();
         BattleEntity previousEntity = battleEntities.get(previousIndex);
-        b.placeEntity(previousEntity);
+        if (previousEntity.isAlive()) {
+            b.placeEntity(previousEntity);
+        }
         BattleEntity currentEntity = battleEntities.get(currentEntityIndex);
         currentEntityIndex = (currentEntityIndex + 1) % battleEntities.size();
 
@@ -154,16 +160,16 @@ public class Battle implements Screen{
 
         if (currentEntity.getSide() == 0) {
             if (clickedHex.isOccupied() && clickedHex.getEntity().getSide() == 1) {
-                        clickedHex.getEntity().takeDamage(currentEntity.getDamage());
-                        if (!clickedHex.getEntity().isAlive()) {
-                            enemyParty.removeEntity(clickedHex.getEntity());
-                            if (enemyParty.isEmpty()) {
-                                restorePlayerPartyHealth();
-                                ScreenManager.replaceScreen(new VictoryScreen());
-                            }
-                            b.removeEntity(clickedHex.getEntity());
-                        }
+                clickedHex.getEntity().takeDamage(currentEntity.getDamage());
+                if (!clickedHex.getEntity().isAlive()) {
+                    enemyParty.removeEntity(clickedHex.getEntity());
+                    if (enemyParty.isEmpty()) {
+                        restorePlayerPartyHealth();
+                        ScreenManager.replaceScreen(new VictoryScreen());
                     }
+                    b.removeEntity(clickedHex.getEntity());
+                }
+            }
             return; // Skip player entities
         }
 

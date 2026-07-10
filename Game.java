@@ -34,6 +34,14 @@ public class Game implements Screen{
         updateFoW();
         animatables.clear(); 
 
+        // Enemy e1 = new Enemy(1, 2);
+        // Enemy e2 = new Enemy(1, 2);
+        // Enemy e3 = new Enemy(1, 2);
+        // enemies.add(e1);
+        // enemies.add(e2);
+        // enemies.add(e3);
+
+
     }
     
     public void draw(Graphics g) {

@@ -30,10 +30,6 @@ public abstract class BattleEntity implements Animatable {
 
     }
 
-    public String toString() {
-        return "BattleEntity at (" + q + ", " + r + ") with health: " + health + " and stack size: " + stackSize;
-    }
-
     public void RestoreStackHealth() {
         this.health = maxHealthPerEntity * stackSize;
     }
