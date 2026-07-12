@@ -18,6 +18,9 @@ public class MenuScreen implements Screen{
 		else if (key == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
+		else if (key == KeyEvent.VK_S) {
+			ScreenManager.pushScreen(new SettingScreen());
+		}
 
     	
     	

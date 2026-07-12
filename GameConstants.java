@@ -21,5 +21,7 @@ public final class GameConstants {
     public static final int BATTLEFIELD_WIDTH = 15; // Width of the battlefield in hexes
     public static final int BATTLEFIELD_HEIGHT = 11; // Height of the battlefield in hexes
 
+    public static boolean FoW = true; // Fog of War enabled by default
+
 
 }

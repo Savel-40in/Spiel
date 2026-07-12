@@ -14,6 +14,10 @@ public class PauseScreen implements Screen {
         else if (e.getKeyCode() == KeyEvent.VK_Q) {
             ScreenManager.replaceScreen(new MenuScreen());
         }
+
+        else if (e.getKeyCode() == KeyEvent.VK_S) {
+            ScreenManager.pushScreen(new SettingScreen());
+        }
     }
 
     @Override

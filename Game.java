@@ -48,7 +48,9 @@ public class Game implements Screen{
 		m.drawMap(g);
     	p.drawPlayer(g);
     	drawEnemies(g);
-		// f.drawFogOfWar(g);
+        if (GameConstants.FoW) {
+            f.drawFogOfWar(g);
+        }
 		s.drawStars(g);
 	} 
     
