@@ -13,4 +13,9 @@ public abstract class Event {
         g.setColor(color);
         g.fillRect(x*GameConstants.CELL_SIZE, y*GameConstants.CELL_SIZE, GameConstants.CELL_SIZE, GameConstants.CELL_SIZE);
     }
+
+    public final void draw(Graphics g, int X, int Y, int size) {
+        g.setColor(color);
+        g.fillRect(X, Y, size, size);
+    }
 }

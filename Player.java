@@ -44,6 +44,11 @@ public class Player implements Animatable{
 		g.setColor(Color.GREEN);
     	g.fillOval(x*GameConstants.CELL_SIZE, y*GameConstants.CELL_SIZE, GameConstants.CELL_SIZE, GameConstants.CELL_SIZE);
 	}
+
+   public void drawPlayer(Graphics g, int X, int Y, int size) {
+      g.setColor(Color.GREEN);
+      g.fillOval(x*size + X, y*size + Y, size, size);
+   }
    
    public int x() {
 	   return x;

@@ -27,6 +27,7 @@ public class Game implements Screen{
 
     public void newLevel() {
         m = new Map();
+        m.gameMap();
         f = new FoW();
         s = new StarBar();
         enemies.clear();

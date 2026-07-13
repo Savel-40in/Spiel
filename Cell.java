@@ -36,6 +36,18 @@ public class Cell {
 		g.drawRect(x*size, y*size, size, size);
 	}
 
+	public void drawCell(Graphics g, int X, int Y, int size) {
+		if (isWall) {
+			g.setColor(Color.BLACK);
+		}else {
+			g.setColor(Color.DARK_GRAY);
+		}
+		g.fillRect(x*size + X, y*size + Y, size, size);
+		event.draw(g, x*size + X, y*size + Y, size);
+		g.setColor(Color.BLACK);
+		g.drawRect(x*size + X, y*size + Y, size, size);
+	}
+
 
 	
 	

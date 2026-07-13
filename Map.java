@@ -15,9 +15,43 @@ public class Map {
 	
 	private Random random = new Random();
 	
-	public Map () {
+	
+	public void gameMap () {
 		map = new Cell[MAP_SIZE][MAP_SIZE];
 		generateMap();
+	}
+
+	public void menuMap () {
+		map = new Cell[MAP_SIZE][MAP_SIZE];
+		initializeMap();
+		generateMazeDFS(random.nextInt(MAP_SIZE / 2) * 2 + 1, random.nextInt(MAP_SIZE / 2) * 2 + 1, 0); // Start at a random odd cell
+		for (int i = 1; i < MAP_SIZE; i++) {
+		    for (int j = 1; j < MAP_SIZE; j++) {
+				map[i][j].setNeighborCount(countOpenNeighbors(i, j));
+				if (!map[i][j].isWall() ) {
+					map[i][j].setVisited(true);
+				}
+				if (!map[i][j].isWall() && countOpenNeighbors(i, j) == 1) {
+					ends.add(map[i][j]);
+				}
+		    }
+		}
+	}
+
+	public List<Cell> coordsToCells(List<int[]> coords) {
+		List<Cell> cells = new ArrayList<>();
+		for (int[] c : coords) {
+			cells.add(map[c[0]][c[1]]);
+		}
+		return cells;
+	}
+	
+	public List<int[]> cellsToCoords(List<Cell> cells) {
+		List<int[]> coords = new ArrayList<>();
+		for (Cell c : cells) {
+			coords.add(new int[] {c.getX(), c.getY()});
+		}
+		return coords;
 	}
 
 	public Cell getCell(int x, int y) {
@@ -37,7 +71,7 @@ public class Map {
 
 		
 
-		generateMazeDFS(random.nextInt(MAP_SIZE / 2) * 2 + 1, random.nextInt(MAP_SIZE / 2) * 2 + 1); // Start at a random odd cell
+		generateMazeDFS(random.nextInt(MAP_SIZE / 2) * 2 + 1, random.nextInt(MAP_SIZE / 2) * 2 + 1, GameConstants.LOOP_CHANCE); // Start at a random odd cell
 		
 		generateRooms();
 
@@ -95,7 +129,7 @@ public class Map {
 		}
 	}
 
-	private void generateMazeDFS(int i, int j) {
+	private void generateMazeDFS(int i, int j, double loopChance) {
 	    map[i][j].setWall(false);
 
 	    List<int[]> directions = getNeighbors(i, j, 2);
@@ -104,8 +138,8 @@ public class Map {
 	    for (int[] d : directions) {
 	        if (map[d[0]][d[1]].isWall()) {   
 	            map[(i + d[0]) / 2][(j + d[1]) / 2].setWall(false);
-	            generateMazeDFS(d[0], d[1]);
-	        } else if (random.nextDouble() < GameConstants.LOOP_CHANCE) { // 5% chance to create a loop
+	            generateMazeDFS(d[0], d[1], loopChance);
+	        } else if (random.nextDouble() < loopChance) { // 5% chance to create a loop
 	            map[(i + d[0]) / 2][(j + d[1]) / 2].setWall(false);
 	        }
 	    }
